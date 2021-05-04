@@ -10,6 +10,19 @@
       apt: 
         name: vim
         state: present
+    - name: Create folder 
+      file: 
+        path: /tmp/s2e1
+        state: directory
+    - name: Create file with content
+      copy: 
+        dest: "/tmp/s2e1/demo"
+        content: |
+          demo
+    - name: Copy file in demo2
+      copy: 
+        src: /tmp/s2e1/demo
+        dest: /tmp/s2e2/demo2
 ## Play
 - hosts: role_hosting
   tasks:
@@ -17,3 +30,10 @@
       apt:
         name: apache2
         state: present
+## Play
+- hosts: app_hosting
+  tasks: 
+    - name: Create directory
+      file: 
+        path: /tmp/toto
+        state: directory 
