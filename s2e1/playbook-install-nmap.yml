@@ -10,19 +10,6 @@
       apt: 
         name: vim
         state: present
-    - name: Create folder 
-      file: 
-        path: /tmp/s2e1
-        state: directory
-    - name: Create file with content
-      copy: 
-        dest: "/tmp/s2e1/demo"
-        content: |
-          demo
-    - name: Copy file in demo2
-      copy: 
-        src: /tmp/s2e1/demo
-        dest: /tmp/s2e2/demo2
 ## Play
 - hosts: role_hosting
   tasks:
@@ -30,10 +17,37 @@
       apt:
         name: apache2
         state: present
+
+# Correction du copie coller
+    - name: "Créer le dossier /tmp/s2e1/"
+      file: 
+        state: directory
+        path: /tmp/s2e1
+
+    - name: "Créer un fichier /tmp/s2e1/demo avec le texte 'demo' dedans"
+      copy: 
+        content: "demo"
+        dest: /tmp/s2e1/demo
+
+    - name: "créer le dossier /tmp/s2e2/"
+      file:
+        state: directory
+        path: /tmp/s2e2
+
+    - name: "copier ce fichier vers /tmp/s2e2/demo2"
+      copy:
+        remote_src: yes
+        src: /tmp/s2e1/demo
+        dest: /tmp/s2e2/demo2
+      #copy: 
+        #src: /tmp/s2e1/demo
+        #dest: /tmp/s2e2/demo2
+      #delegate_to: "{{ inventory_hostname }}"  
 ## Play
 - hosts: app_hosting
   tasks: 
     - name: Create directory
       file: 
         path: /tmp/toto
-        state: directory 
+        state: directory
+
