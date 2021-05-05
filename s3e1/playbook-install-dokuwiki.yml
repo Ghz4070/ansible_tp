@@ -1,0 +1,38 @@
+---
+## Play
+- hosts: app_hosting
+  tasks:
+ 
+## Environment initialization
+    - name: Edit /etc/hosts
+      linefile:
+        dest: /etc/hosts
+        line: "127.0.0.1       recettes.wiki 
+               127.0.0.1       politique.wiki"
+    - name: install php
+      apt:
+        name: 
+          - php7.4
+          - apache2
+        state: present   
+
+## Download Dokuwiki
+
+    - name: Download dokuwiki
+      get_url:
+        url: https://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz
+        dest: /usr/src
+
+    - name: Unzip dokuwiki
+      unarchive:
+        remote_src: yes # The archive is already on the remote machine, not on the control machine
+        src: /usr/src/dokuwiki-stable.tgz
+        dest: /usr/src
+
+    - name: Rename dokuwiki directory
+      command: mv /usr/src/dokuwiki-2020-07-29 /usr/src/dokuwiki 
+
+    - name: Delete downloaded archive
+      file:
+        path: /usr/src/dokuwiki-stable.tgz
+        state: absent
