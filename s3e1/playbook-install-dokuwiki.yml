@@ -12,7 +12,7 @@
     - name: install php
       apt:
         name: 
-          - php7.4
+          - php7.3
           - apache2
         state: present   
 
@@ -36,3 +36,7 @@
       file:
         path: /usr/src/dokuwiki-stable.tgz
         state: absent
+
+## Virtualhost
+
+  - name:
