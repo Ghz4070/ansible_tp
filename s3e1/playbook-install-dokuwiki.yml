@@ -38,5 +38,36 @@
         state: absent
 
 ## Virtualhost
+  ## Recette
+    - name: Copy dokuwiki in /recettes_wiki
+      command: cp -r /usr/src/dokuwiki /var/www/recettes_wiki
 
-  - name:
+    - name: Change permissions of /recettes_wiki
+      file:
+        path: /var/www/recettes_wiki
+        state: directory
+        recurse: yes
+        owner: www-data
+        group: www-data
+
+    - name: Copy recettes.wiki config
+      copy:
+        src: files/recettes-wiki.conf
+        dest: /etc/apache2/sites-available/recettes-wiki.conf
+
+  ## Politique
+    - name: Copy dokuwiki in /politique_wiki
+      command: cp -r /usr/src/dokuwiki /var/www/politique_wiki
+
+    - name: Change permissions of /politique_wiki
+      file:
+        path: /var/www/politique_wiki
+        state: directory
+        recurse: yes
+        owner: www-data
+        group: www-data
+
+    - name: Copy politique.wiki config
+      copy:
+        src: files/politique-wiki.conf
+        dest: /etc/apache2/sites-available/politique-wiki.conf
