@@ -1,0 +1,19 @@
+---
+## Play
+- hosts: role_hosting
+
+  # tasks:
+  #   - name: "Install vim configuration"
+  #     copy:
+  #       src: files/dot.vimrc
+  #       dest: /home/vagrant/.vimrc
+  #       owner: vagrant
+  #       group: vagrant
+  tasks:
+    - name: "Install vim configuration"
+      template:
+        src: templates/dot.vimrc.j2
+        dest: /home/vagrant/.vimrc
+        owner: vagrant
+        group: vagrant
+      when: enable_vim
