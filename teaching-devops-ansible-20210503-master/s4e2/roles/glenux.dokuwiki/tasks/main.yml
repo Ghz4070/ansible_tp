@@ -1,0 +1,53 @@
+---
+# vim: set ts=2 sw=2 smarttab et:
+# tasks file for glenux.dokuwiki
+- name: (A2) Install Apache et PHP
+  apt: 
+    name:
+      - rsync
+      - apache2
+      - php7.3
+    state: present
+  
+- name: (A3) Download Dokuwiki
+  get_url:
+    url: "https://download.dokuwiki.org/src/dokuwiki/dokuwiki-{{ dokuwiki_version }}.tgz"
+    checksum: "{{ dokuwiki_checksum }}"
+    dest: "/usr/src/dokuwiki-{{ dokuwiki_version }}.tgz"
+
+- name: Unzip dokuwiki
+  unarchive:
+    remote_src: yes 
+    src: "/usr/src/dokuwiki-{{ dokuwiki_version }}.tgz"
+    dest: /usr/src
+    group: www-data
+    owner: www-data
+
+- name: Synchronize dokuwiki with destination directory
+  synchronize: 
+    archive: true
+    src: "/usr/src/dokuwiki-{{ dokuwiki_version }}/"
+    dest: "/var/www/{{ item.domain | regex_replace('\\.','-') }}/"
+  with_items: "{{ dokuwiki_sites }}"
+  delegate_to: "{{ inventory_hostname }}"
+
+- name: (A5) Install virtualhosts configuration
+  template:
+    src: templates/etc.apache2.site-available.site.conf.j2
+    dest: "/etc/apache2/sites-available/{{ item.domain | regex_replace('\\.','-') }}.conf"
+  with_items: "{{ dokuwiki_sites }}"
+
+- name: Enable virtualhosts configuration
+  file:
+    src: "/etc/apache2/sites-available/{{ item.domain | regex_replace('\\.','-') }}.conf"
+    dest: "/etc/apache2/sites-enabled/{{ item.domain | regex_replace('\\.','-') }}.conf"
+    owner: root
+    group: root
+    state: link
+  with_items: "{{ dokuwiki_sites }}"
+
+- name: Reload apache service, in all cases
+  service:
+    name: apache2
+    state: reloaded
+
