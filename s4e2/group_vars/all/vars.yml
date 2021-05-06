@@ -1,0 +1,12 @@
+---
+# vim: set ts=2 sw=2 et:
+dokuwiki_sites:
+  - domain: politique.wiki
+    ip: 192.168.50.10
+  - domain: recettes.wiki
+    ip: 192.168.50.10
+
+# ces variables sont définies dans vault.yml
+extrauser_username: 
+extrauser_password: 
+

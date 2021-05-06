@@ -1,0 +1,37 @@
+---
+# vim: set ts=2 sw=2 smarttab et:
+
+- hosts: role_control
+  tasks:
+    - name: Install rsync on control
+      apt: 
+        name: rsync
+        state: present
+
+    - name: Add lines for remote host/domains
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ item.ip }} {{ item.domain }}"
+      with_items: "{{ dokuwiki_sites }}"
+
+- hosts: role_hosting
+  tasks: []
+  roles:
+    - role: glenux.dokuwiki
+
+#   - role: glenux.dokuwiki
+#     vars: 
+#       dokuwiki_version: "{{ item.version }}"
+#       dokuwiki_sites: "{{ item.sites }}"
+#     with_items:
+#       - version: 2020-07-09
+#         sites: 
+#           - domain: choucroutte.wiki
+#             config: choucroutte-wiki
+#             ip: 192.168.50.10
+#       - version: 2019-11-01b
+#         sites: 
+#           - domain: tarama.wiki
+#             config: tarama-wiki
+#             ip: 192.168.50.10
+#  
